@@ -9,7 +9,7 @@ var path         = require('path');
 
 var fs = Promise.promisifyAll(require('fs'));
 var app = koa();
-
+app.set('port', 3000);
 var todos = [];
 
 var counter = (function() {
@@ -30,22 +30,16 @@ app.use(router.post('/todos', function *() {
 }));
 
 app.use(router.get('/todos', function *() {
+  console.log(this);
   this.body = JSON.stringify(todos);
 }));
 
 app.use(router.post('/todos/:id', function *() {
-
+  
 
 }));
 
 
 
-app.use()
-
-
-
-
-
-var port = 3000;
-console.log('now listening on port: ', port);
-app.listen(port);
+app.listen();
+console.log('getting teh port?', app.get('port'));
