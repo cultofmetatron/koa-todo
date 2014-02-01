@@ -12,10 +12,19 @@ var app = koa();
 
 var todos = [];
 
+var counter = (function() {
+  var count = 0;
+  return function() {
+    count++;
+    return count;
+  };
+})();
+
 app.use(staticServer(path.join(__dirname, 'public')));
 
 app.use(router.post('/todos', function *() {
   var todo = (yield parse.json(this));
+  todo.id = counter();
   todos.push(todo);
   this.body = JSON.stringify(todos);
 }));
@@ -24,10 +33,19 @@ app.use(router.get('/todos', function *() {
   this.body = JSON.stringify(todos);
 }));
 
+app.use(router.post('/todos/:id', function *() {
+
+
+}));
+
+
+
+app.use()
 
 
 
 
-var port = 3000
+
+var port = 3000;
 console.log('now listening on port: ', port);
 app.listen(port);

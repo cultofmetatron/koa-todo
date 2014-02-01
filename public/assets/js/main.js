@@ -7,7 +7,6 @@
       $list.html('');
       todos.forEach(function(todo) {
         $list.append('<li>' + todo.content + '</li>');
-        
       });
     };
 
