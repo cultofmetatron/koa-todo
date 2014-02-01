@@ -12,7 +12,7 @@ var app = koa();
 
 var todos = [];
 
-app.use(staticServer(path.join(__dirname, 'public')))
+app.use(staticServer(path.join(__dirname, 'public')));
 
 app.use(router.post('/todos', function *() {
   var todo = (yield parse.json(this));
