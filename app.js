@@ -1,36 +1,33 @@
 //jshint esnext
-var koa = require('koa');
+var koa          = require('koa');
+var staticServer = require('koa-static');
+var parse        = require('co-body');
+var router       = require('koa-route');
+var underscore   = require('underscore');
+var Promise      = require('bluebird');
+var path         = require('path');
+
+var fs = Promise.promisifyAll(require('fs'));
 var app = koa();
 
-app.use(function *(next) {
-  var start = new Date();
-  yield next;
-  var ms = new Date - start;
-  this.set('X-Response-Time', ms + 'ms');
-});
+var todos = [];
 
-//logger
+app.use(staticServer(path.join(__dirname, 'public')))
 
-app.use(function *(next) {
-  var start = new Date;
-  yield next;
-  var ms = new Date - start;
-  console.log('%s %s - %s', this.method, this.url, ms);
-});
+app.use(router.post('/todos', function *() {
+  var todo = (yield parse.json(this));
+  todos.push(todo);
+  this.body = JSON.stringify(todos);
+}));
 
-app.use(function *(next) {
-  if (this.url === '/foo') {
-    this.body = 'hello valhalasause';
-    this.response.redirect('/bar');
-  } else {
-    yield next;
-  }
-});
+app.use(router.get('/todos', function *() {
+  this.body = JSON.stringify(todos);
+}));
 
-//response
-app.use(function *() {
-  console.log(this.request.header);
-  this.body = 'Hello world';
-});
 
-app.listen(3000);
+
+
+
+var port = 3000
+console.log('now listening on port: ', port);
+app.listen(port);
