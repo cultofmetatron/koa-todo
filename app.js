@@ -1,17 +1,22 @@
 //jshint esnext
 var koa          = require('koa');
 var staticServer = require('koa-static');
+
+//this allows us to parse the native req object to get the body
 var parse        = require('co-body');
+
 var router       = require('koa-route');
 var _            = require('underscore');
+
 var Promise      = require('bluebird');
 var path         = require('path');
 
 var fs = Promise.promisifyAll(require('fs'));
 var app = koa();
-app.set('port', 3000);
+//our very basic data store
 var todos = [];
 
+//gets us unique ids
 var counter = (function() {
   var count = 0;
   return function() {
@@ -20,6 +25,7 @@ var counter = (function() {
   };
 })();
 
+//
 app.use(staticServer(path.join(__dirname, 'public')));
 
 app.use(router.post('/todos', function *() {
@@ -29,6 +35,7 @@ app.use(router.post('/todos', function *() {
   todos.push(todo);
   this.body = JSON.stringify(todos);
 }));
+
 
 app.use(router.get('/todos', function *() {
   this.body = JSON.stringify(todos);
@@ -40,7 +47,6 @@ app.use(router.get('/source', function *() {
 }));
 
 app.use(router.delete('/todos/:id', function *(id) {
-  console.log('yolooooo');
   todos = _(todos).reject(function(todo) {
     console.log('what? ', todo, id );
     return todo.id === parseInt(id, 10);
@@ -51,5 +57,5 @@ app.use(router.delete('/todos/:id', function *(id) {
 
 
 
-app.listen();
-console.log('getting teh port?', app.get('port'));
+app.listen(3000);
+console.log('listening on port 3000');
