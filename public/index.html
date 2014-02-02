@@ -3,6 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <script type="text/javascript" charset="utf-8" src="/components/jquery/jquery.js"></script>
+  <script type="text/javascript" charset="utf-8" src="/components/underscore/underscore.js"></script>
   <title>Index</title>
   
 </head>
@@ -18,6 +19,13 @@
     <input type="submit">
   </form>
 
+
+  <script type="template/underscore" data-name="listItem" charset="utf-8">
+    <li><%= content %> <a class="delete" href="/todos/<%= id %>"> Delete </a></li>
+  </script>
+
+
   <script type="text/javascript" charset="utf-8" src="/assets/js/main.js"></script>
+
 </body>
 </html>

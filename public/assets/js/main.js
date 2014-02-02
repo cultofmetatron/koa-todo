@@ -1,12 +1,17 @@
 
 (function($) {
-  
+  window.templates = {};
+  $('script[type="template/underscore"]').each(function() {
+    templates[$(this).data('name')] = _.template($(this).html());
+  });
+
   var loadTodos = function(todos) {
       todos = JSON.parse(todos);
       var $list = $('ul.todoList');
+      $('input[name="taskName"]').val('');
       $list.html('');
       todos.forEach(function(todo) {
-        $list.append('<li>' + todo.content + '</li>');
+        $list.append(templates.listItem(todo));
       });
     };
 
@@ -24,9 +29,22 @@
     });
     
     req.done(loadTodos);
+  });
+  
+  $('ul.todoList').on('click', 'li a.delete', function(e) {
+    e.preventDefault();
+    var $el = $(this);
+    var href = $el.attr('href');
+    $.ajax({
+      url: href,
+      method: 'delete',
+      type: 'delete'
+    })
+    
+    .done(loadTodos);
+
 
   });
-
 
   $(document).on('ready', function() {
     var text = $(this).find('input[name="taskName"]').val();

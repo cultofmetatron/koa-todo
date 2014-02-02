@@ -3,7 +3,7 @@ var koa          = require('koa');
 var staticServer = require('koa-static');
 var parse        = require('co-body');
 var router       = require('koa-route');
-var underscore   = require('underscore');
+var _            = require('underscore');
 var Promise      = require('bluebird');
 var path         = require('path');
 
@@ -24,19 +24,29 @@ app.use(staticServer(path.join(__dirname, 'public')));
 
 app.use(router.post('/todos', function *() {
   var todo = (yield parse.json(this));
+
   todo.id = counter();
   todos.push(todo);
   this.body = JSON.stringify(todos);
 }));
 
 app.use(router.get('/todos', function *() {
-  console.log(this);
   this.body = JSON.stringify(todos);
 }));
 
-app.use(router.post('/todos/:id', function *() {
-  
+app.use(router.get('/source', function *() {
+  var contents = yield fs.readFileAsync('./app.js', 'utf8');
+  this.body = contents;
+}));
 
+app.use(router.delete('/todos/:id', function *(id) {
+  console.log('yolooooo');
+  todos = _(todos).reject(function(todo) {
+    console.log('what? ', todo, id );
+    return todo.id === parseInt(id, 10);
+  }, this);
+  console.log(todos);
+  this.body = JSON.stringify(todos.sort(function(a, b) { return a - b;}));
 }));
 
 
